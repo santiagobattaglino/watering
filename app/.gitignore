@@ -1,0 +1,7 @@
+/build
+/schemas
+/debug
+/release
+/staging
+/emulator
+*.iml

@@ -1,0 +1,13 @@
+android.applicationVariants.all { variant ->
+    variant.outputs.each { output ->
+        def newApkName = "${rootProject.name}-${variant.versionName}-${variant.versionCode}-${output.baseName}.apk"
+        output.outputFileName = new File(variant.name, newApkName)
+    }
+}
+
+task getVersionName {
+    group = "reporting"
+    doLast {
+        println version_name
+    }
+}

@@ -1,0 +1,181 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-parcelize'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
+apply plugin: 'kotlin-kapt'
+
+apply from: 'artifacts.gradle'
+
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+android {
+    namespace rootProject.ext.applicationId
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId rootProject.ext.applicationId
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode project.version_code
+        versionName project.version_name
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas".toString())
+                arg("room.incremental", "true")
+                arg("room.expandProjection", "true")
+            }
+        }
+        resourceConfigurations += ['en']
+        resValue "string", "app_name", "${rootProject.name}"
+    }
+    sourceSets {
+        main {
+            java.srcDirs += 'src/main/kotlin'
+            res.srcDirs = [
+                    'src/main/res',
+                    file('src/main/res/features/').listFiles()
+            ]
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlin {
+        jvmToolchain(17)
+    }
+    packagingOptions {
+        jniLibs {
+            excludes += ['META-INF/**']
+        }
+        resources {
+            excludes += ['META-INF/**']
+        }
+    }
+    buildFeatures {
+        dataBinding true
+        viewBinding true
+    }
+    signingConfigs {
+        debug {
+            storeFile file(keystoreProperties['storeFileDebug'])
+        }
+        emulator {
+            storeFile file(keystoreProperties['storeFileDebug'])
+        }
+        release {
+            storeFile file(keystoreProperties['storeFile'])
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+    buildTypes {
+        debug {
+            resValue "string", "app_name", "dev ${rootProject.name}"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix "-dev"
+            resValue "string", "app_version", "${defaultConfig.versionName}${versionNameSuffix}"
+            debuggable true
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.debug
+            buildConfigField "String", "SERVER_IP_ADDRESS", "\"192.168.0.200\""
+        }
+        release {
+            resValue "string", "app_name", "${rootProject.name}"
+            resValue "string", "app_version", "${defaultConfig.versionName}${versionNameSuffix}"
+            debuggable true
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            buildConfigField "String", "SERVER_IP_ADDRESS", "\"192.168.0.200\""
+        }
+    }
+    lint {
+        checkReleaseBuilds true
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+
+    // Support
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+
+    // AndroidX UI
+    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+    implementation "androidx.fragment:fragment-ktx:1.6.0"
+
+    // RecyclerView
+    implementation "androidx.recyclerview:recyclerview:1.3.0"
+    implementation "androidx.recyclerview:recyclerview-selection:1.1.0"
+
+    // AndroidX Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:2.6.0"
+    implementation "androidx.navigation:navigation-ui-ktx:2.6.0"
+    //implementation "androidx.navigation:navigation-dynamic-features-fragment:2.5.2"
+
+    // AndroidX lifecycle ViewModel and LiveData
+    def lifecycleVersion = '2.6.1'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion"
+
+    // Room
+    def roomVersion = '2.5.2'
+    implementation "androidx.room:room-runtime:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
+
+    // Material
+    implementation "com.google.android.material:material:1.9.0"
+
+    // Kotlin
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1"
+
+    // Koin
+    implementation 'io.insert-koin:koin-core:3.3.3'
+    implementation 'io.insert-koin:koin-android:3.3.3'
+    implementation 'io.insert-koin:koin-androidx-navigation:3.3.3'
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+
+    // OkHttp
+    implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.3"
+    implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3"
+
+    // Gson
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    // Encapsulates server response with sealed class NetworkResponse
+    implementation 'com.github.haroldadmin:NetworkResponseAdapter:5.0.0'
+
+    // Tools
+    implementation 'org.ocpsoft.prettytime:prettytime:5.0.6.Final'
+    // implementation 'pub.devrel:easypermissions:3.0.0'
+    implementation 'io.github.bitvale:switcher:1.1.2'
+
+    // Ktor Server
+    def ktorVersion = '2.3.2'
+    implementation "io.ktor:ktor-server-core:$ktorVersion"
+    implementation "io.ktor:ktor-server-netty:$ktorVersion"
+    implementation "io.ktor:ktor-server-compression:$ktorVersion"
+    implementation "io.ktor:ktor-server-call-logging:$ktorVersion"
+    implementation "io.ktor:ktor-server-default-headers:$ktorVersion"
+    implementation "io.ktor:ktor-server-content-negotiation:$ktorVersion"
+
+    // Ktor Serialization
+    implementation "io.ktor:ktor-serialization-gson:$ktorVersion"
+
+    // Charts
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+}

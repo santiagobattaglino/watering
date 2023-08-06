@@ -1,0 +1,37 @@
+apply from: 'version.gradle'
+
+buildscript {
+    ext {
+        applicationId = 'com.santiago.battaglino.esp32'
+        targetSdkVersion = 33
+        minSdkVersion = 31
+        compileSdkVersion = targetSdkVersion
+    }
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.1.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.6.0"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+    }
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:deprecation"
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/config">
+    <fragment
+        android:id="@+id/config"
+        android:name="com.santiago.battaglino.esp32.presentation.ui.config.ConfigFragment"
+        android:label="Config"
+        tools:layout="@layout/fragment_config">
+        <!--<action
+            android:id="@+id/toTeamSessions"
+            app:destination="@+id/teamSessions" />-->
+    </fragment>
+</navigation>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">@color/black</color>
+    <color name="bottomNav">#F5F5F5</color>
+    <color name="bottomNavStroke">#B3B3B3</color>
+    <color name="grayTitles">#8E8E93</color>
+    <color name="header">#F1F1F2</color>
+
+    <color name="white">#FFFFFFFF</color>
+    <color name="accent">#FFBB86FC</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="gray">#969696</color>
+    <color name="textGray">#363636</color>
+    <color name="chart_highlight_line_color">#FF0000</color>
+    <color name="row1">#E3E3E3</color>
+    <color name="error">#A60303</color>
+    <color name="ok">#036B13</color>
+    <color name="score_green">#89ff87</color>
+    <color name="score_orange">#ffd787</color>
+    <color name="score_red">#ff8787</color>
+    <color name="intervention">#085394</color>
+    <color name="transparent">#00000000</color>
+</resources>
