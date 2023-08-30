@@ -43,14 +43,16 @@ class ConfigFragment : BaseHomeFragment<FragmentConfigBinding>() {
             runView.setText(appData.run.toString())
             runView.textChanges().debounce(1000).onEach {
                 it?.apply {
-                    appData.run = toString().toInt()
+                    if (toString().isNotEmpty())
+                        appData.run = toString().toInt()
                 }
             }.launchIn(lifecycleScope)
 
             everyView.setText(appData.every.toString())
             everyView.textChanges().debounce(1000).onEach {
                 it?.apply {
-                    appData.every = toString().toInt()
+                    if (toString().isNotEmpty())
+                        appData.every = toString().toInt()
                 }
             }.launchIn(lifecycleScope)
 

@@ -2,6 +2,8 @@ package com.santiago.battaglino.esp32.presentation.ui.base
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import com.google.gson.Gson
 import com.santiago.battaglino.esp32.domain.model.base.Data
 import com.santiago.battaglino.esp32.domain.model.config.ConfigResponse
 import com.santiago.battaglino.esp32.domain.model.status.ServerStatusResponse
@@ -70,11 +72,11 @@ abstract class BaseServerActivity : BaseActivity() {
 
     private fun Route.configRoute() {
         get("/config") {
-            call.respond(
-                ConfigResponse(
-                    appData.run, appData.every, appData.isRunning, appData.deepSleep
-                )
-            )
+            val response =
+                ConfigResponse(appData.run, appData.every, appData.isRunning, appData.deepSleep)
+            val responseString: String = Gson().toJson(response)
+            Log.d(tag, responseString)
+            call.respond(responseString)
         }
     }
 
