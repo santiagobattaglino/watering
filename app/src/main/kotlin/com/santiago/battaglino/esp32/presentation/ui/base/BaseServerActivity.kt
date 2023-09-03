@@ -4,10 +4,12 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import com.google.gson.Gson
+import com.santiago.battaglino.esp32.data.repository.SharedPreferenceUtils
 import com.santiago.battaglino.esp32.domain.model.base.Data
 import com.santiago.battaglino.esp32.domain.model.config.ConfigResponse
 import com.santiago.battaglino.esp32.domain.model.status.ServerStatusResponse
 import com.santiago.battaglino.esp32.presentation.ui.server.ServerViewModel
+import com.santiago.battaglino.esp32.util.Arguments
 import com.santiago.battaglino.esp32.util.Constants
 import com.santiago.battaglino.esp32.util.NotificationUtil
 import io.ktor.serialization.gson.gson
@@ -23,6 +25,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.slf4j.event.Level
 import java.text.DateFormat
@@ -31,6 +34,7 @@ abstract class BaseServerActivity : BaseActivity() {
 
     private val tag = javaClass.simpleName
     protected val viewModel: ServerViewModel by viewModel()
+    private val sp: SharedPreferenceUtils by inject()
 
     private val server by lazy {
         embeddedServer(Netty, Constants.SERVER_PORT, watchPaths = emptyList()) {
@@ -72,6 +76,9 @@ abstract class BaseServerActivity : BaseActivity() {
 
     private fun Route.configRoute() {
         get("/config") {
+            call.request.queryParameters["batteryLevel"]?.let { batteryLevel ->
+                sp.saveString(Arguments.BATTERY_LEVEL, batteryLevel)
+            }
             val response =
                 ConfigResponse(appData.run, appData.every, appData.isRunning, appData.deepSleep)
             val responseString: String = Gson().toJson(response)

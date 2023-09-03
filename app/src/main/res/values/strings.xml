@@ -99,4 +99,5 @@
     <string name="every">Every</string>
     <string name="running">Running?</string>
     <string name="deepSleep">Deep Sleep</string>
+    <string name="battery_level">BatteryLevel</string>
 </resources>

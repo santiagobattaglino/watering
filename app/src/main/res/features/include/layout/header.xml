@@ -64,13 +64,12 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/teamName"
+        android:id="@+id/batteryLevel"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="0.2"
         android:gravity="center"
-        android:text="@string/team_hint"
-        android:textColor="@color/white"
-        android:visibility="invisible" />
+        android:text="@string/battery_level"
+        android:textColor="@color/white" />
 
 </LinearLayout>

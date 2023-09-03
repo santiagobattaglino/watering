@@ -52,7 +52,7 @@ class TrainerActivity : BaseServerActivity() {
                 NetworkUtil.getIpAddressInLocalNetwork(this@TrainerActivity, sp, appData),
                 Constants.SERVER_PORT.toString()
             )
-            // header.teamName.text = appData.team?.name
+            header.batteryLevel.text = sp.getString(Arguments.BATTERY_LEVEL)
         }
         setUpNavigation()
     }

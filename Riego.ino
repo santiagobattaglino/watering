@@ -52,7 +52,11 @@ void setUpWiFi() {
 
 void retrieveConfig() {
     http.useHTTP10(true);
-    http.begin("http://192.168.0.199:13276/config");
+
+    // Vout = (4.2*100k)/(27k + 100k) = 3.3V
+    float batteryLevel = map(analogRead(GPIO_NUM_32), 0.0f, 4095.0f, 0, 100);
+
+    http.begin("http://192.168.0.199:13276/config?batteryLevel=" + String(batteryLevel));
     int httpResponseCode = http.GET();
     //String httpResponseBody = http.getString();
     //Serial.println("httpResponseBody: " + httpResponseBody);
