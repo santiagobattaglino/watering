@@ -9,6 +9,7 @@ import com.santiago.battaglino.esp32.domain.model.AppData
 import com.santiago.battaglino.esp32.domain.model.base.Data
 import com.santiago.battaglino.esp32.domain.model.config.ConfigResponse
 import com.santiago.battaglino.esp32.domain.model.status.ServerStatusResponse
+import kotlinx.coroutines.flow.Flow
 
 class ConnectionRepositoryImpl(
     private val api: Api, private val connectionDao: ConnectionDao
@@ -18,7 +19,7 @@ class ConnectionRepositoryImpl(
     override suspend fun addConnection(newConnection: Connection) =
         connectionDao.insert(newConnection)
 
-    override suspend fun getConnection(userId: String): Connection? {
+    override suspend fun getConnection(userId: Long): Connection? {
         return connectionDao.getConnection(userId)
     }
 
@@ -90,7 +91,7 @@ class ConnectionRepositoryImpl(
 
     override suspend fun sendConfig(appData: AppData): ResultSendConfig {
         return when (val result =
-            api.sendConfig(appData.deepSleep, appData.every, appData.run, appData.isRunning)) {
+            api.sendConfig(appData.deepSleep, appData.every, appData.run, appData.status)) {
             is NetworkResponse.Success -> {
                 ResultSendConfig(result.body, null)
             }
@@ -120,6 +121,8 @@ class ConnectionRepositoryImpl(
             }
         }
     }
+
+    override fun getLastKnownBatteryLevel() = connectionDao.getLastKnownBatteryLevel()
 }
 
 data class ResultRoot(

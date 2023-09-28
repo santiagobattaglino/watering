@@ -34,6 +34,7 @@ class TrainerActivity : BaseServerActivity() {
         super.onCreate(savedInstanceState)
 
         viewModel.getServerStatus()
+        viewModel.getLastKnownBatteryLevel()
 
         /*lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -52,7 +53,6 @@ class TrainerActivity : BaseServerActivity() {
                 NetworkUtil.getIpAddressInLocalNetwork(this@TrainerActivity, sp, appData),
                 Constants.SERVER_PORT.toString()
             )
-            header.batteryLevel.text = sp.getString(Arguments.BATTERY_LEVEL)
         }
         setUpNavigation()
     }
@@ -93,6 +93,9 @@ class TrainerActivity : BaseServerActivity() {
                     ServerViewModel.ServerStatus.Error -> uiServerStopped()
                 }
             }
+        }
+        viewModel.batteryLevel.observe(this) {
+            viewBinding.header.batteryLevel.text = it.toString()
         }
     }
 

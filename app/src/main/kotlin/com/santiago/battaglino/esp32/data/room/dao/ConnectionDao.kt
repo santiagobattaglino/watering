@@ -14,8 +14,11 @@ interface ConnectionDao : BaseDao<Connection> {
     fun getConnections(): Flow<List<Connection>>
 
     @Query("SELECT * FROM connection WHERE userId = :userId")
-    suspend fun getConnection(userId: String): Connection?
+    suspend fun getConnection(userId: Long): Connection?
 
     @Query("DELETE FROM connection where userId = :userId")
     fun removeConnection(userId: String): Int
+
+    @Query("SELECT batteryLevel FROM connection ORDER BY id DESC LIMIT 1")
+    fun getLastKnownBatteryLevel(): Flow<Int>
 }

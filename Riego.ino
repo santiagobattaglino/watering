@@ -11,8 +11,8 @@ RTC_DATA_ATTR int bootCount = 0;
 RTC_DATA_ATTR int status = 0;     // 0 relay OFF, 1 relay ON
 RTC_DATA_ATTR int deepSleep = 1;  // 0 deepSleep Off, 1 deepSleep ON
 RTC_DATA_ATTR int wakeupTimer = 0;
-RTC_DATA_ATTR int run = 120;     // run 2 min
-RTC_DATA_ATTR int every = 7200;  // every 2 hours
+RTC_DATA_ATTR int run = 10;
+RTC_DATA_ATTR int every = 10;
 touch_pad_t touchPin;
 
 HTTPClient http;
@@ -54,8 +54,11 @@ void retrieveConfig() {
     http.useHTTP10(true);
 
     // Vout = (4.2*100k)/(27k + 100k) = 3.3V
-    float batteryLevel = map(analogRead(GPIO_NUM_32), 0.0f, 4095.0f, 0, 100);
-
+    //float batteryLevel = map(analogRead(GPIO_NUM_32), 0.0f, 4095.0f, 0, 100);
+    int analogReadBattery = analogRead(GPIO_NUM_32);
+    // from 3v to 4.2v map to 0 - 100 %
+    int batteryLevel = map(analogReadBattery, 2925, 4095, 0, 100);
+    Serial.println("batteryLevel": + String(batteryLevel));
     http.begin("http://192.168.0.199:13276/config?batteryLevel=" + String(batteryLevel));
     int httpResponseCode = http.GET();
     //String httpResponseBody = http.getString();

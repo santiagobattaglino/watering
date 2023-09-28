@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import com.google.gson.Gson
 import com.santiago.battaglino.esp32.data.repository.SharedPreferenceUtils
+import com.santiago.battaglino.esp32.domain.entity.Connection
 import com.santiago.battaglino.esp32.domain.model.base.Data
 import com.santiago.battaglino.esp32.domain.model.config.ConfigResponse
 import com.santiago.battaglino.esp32.domain.model.status.ServerStatusResponse
@@ -74,13 +75,25 @@ abstract class BaseServerActivity : BaseActivity() {
         }
     }
 
+    // ESP32 Calls here every loop passing batteryLevel percentage as String Get QueryParam
     private fun Route.configRoute() {
         get("/config") {
             call.request.queryParameters["batteryLevel"]?.let { batteryLevel ->
-                sp.saveString(Arguments.BATTERY_LEVEL, batteryLevel)
+                val lastInsertedConnectionId = viewModel.addConnection(
+                    Connection(
+                        batteryLevel = batteryLevel.toInt(),
+                        config = ConfigResponse(
+                            appData.run,
+                            appData.every,
+                            appData.status,
+                            appData.deepSleep
+                        )
+                    )
+                )
+                Log.d(tag, "lastInsertedConnectionId $lastInsertedConnectionId")
             }
             val response =
-                ConfigResponse(appData.run, appData.every, appData.isRunning, appData.deepSleep)
+                ConfigResponse(appData.run, appData.every, appData.status, appData.deepSleep)
             val responseString: String = Gson().toJson(response)
             Log.d(tag, responseString)
             call.respond(responseString)

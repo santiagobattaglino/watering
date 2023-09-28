@@ -56,12 +56,12 @@ class ConfigFragment : BaseHomeFragment<FragmentConfigBinding>() {
                 }
             }.launchIn(lifecycleScope)
 
-            running.setChecked(appData.isRunning == 1)
+            running.setChecked(appData.status == 1)
             running.setOnCheckedChangeListener { checked ->
                 if (checked) {
-                    appData.isRunning = 1
+                    appData.status = 1
                 } else {
-                    appData.isRunning = 0
+                    appData.status = 0
                 }
                 viewModel.sendConfig()
             }

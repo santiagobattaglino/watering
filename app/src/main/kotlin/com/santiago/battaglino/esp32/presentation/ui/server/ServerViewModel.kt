@@ -14,6 +14,7 @@ import io.ktor.server.engine.stop
 import io.ktor.server.netty.NettyApplicationEngine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
@@ -34,6 +35,7 @@ class ServerViewModel(
     val resultRoot = MutableLiveData<ResultRoot>()
     val resultServerStatus = MutableLiveData<ResultServerStatus>()
     val resultSendConfig = MutableLiveData<ResultSendConfig>()
+    val batteryLevel = MutableLiveData<Int>()
 
     enum class ServerStatus(var displayMsg: String) {
         Stopped("Server is down"), Starting("Starting server"), Started("Server is up"), Error("error")
@@ -118,11 +120,18 @@ class ServerViewModel(
         }
     }
 
-    suspend fun addConnection(newConnection: Connection) {
-        connectionRepository.addConnection(newConnection)
+    suspend fun addConnection(newConnection: Connection): Long {
+        batteryLevel.postValue(newConnection.batteryLevel)
+        return connectionRepository.addConnection(newConnection)
     }
 
     suspend fun removeConnection(userId: String) {
         connectionRepository.removeConnection(userId)
+    }
+
+    fun getLastKnownBatteryLevel() {
+        viewModelScope.launch {
+            batteryLevel.value = connectionRepository.getLastKnownBatteryLevel().first()
+        }
     }
 }
