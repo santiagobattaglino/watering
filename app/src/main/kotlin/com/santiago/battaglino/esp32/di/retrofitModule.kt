@@ -66,13 +66,13 @@ val retrofitModule = module {
         }
 
         // Using ngrok for emulator, server port not needed
-        val baseUrl = if (BuildConfig.BUILD_TYPE == "emulator") {
-            "https://${appData.serverIpAddress}/"
+        /*val baseUrl = if (BuildConfig.BUILD_TYPE == "emulator") {
+            "https://${BuildConfig.BUILD_TYPE}/"
         } else {
             "http://${appData.serverIpAddress}:${Constants.SERVER_PORT}/"
-        }
+        }*/
 
-        Retrofit.Builder().baseUrl(baseUrl).addConverterFactory(GsonConverterFactory.create(get()))
+        Retrofit.Builder().baseUrl("http://${BuildConfig.SERVER_IP_ADDRESS}/").addConverterFactory(GsonConverterFactory.create(get()))
             .addCallAdapterFactory(NetworkResponseAdapterFactory())
             .client(get(named("OkHttpClient")) as OkHttpClient).build()
     }
